@@ -20,8 +20,13 @@ export default function App() {
     [empty, empty, empty],
     [empty, empty, empty],
   ]);
-  const [scores, setScores] = useState([0, 0, 0]); // computer, human, ties
+  const [scores, setScores] = useState({
+    easy: [0, 0, 0],    // computer, human, ties
+    medium: [0, 0, 0],  // computer, human, ties
+    hard: [0, 0, 0]     // computer, human, ties
+  });
   const [entitiesTurn, setEntitiesTurn] = useState(human);
+  const [difficulty, setDifficulty] = useState("hard");
 
   function newGame() {
     setBoard([
@@ -68,8 +73,15 @@ export default function App() {
         setEntitiesTurn={setEntitiesTurn}
         scores={scores}
         setScores={setScores}
+        difficulty={difficulty}
       />
-      <Scores scores={scores} entitiesTurn={entitiesTurn} newGame={newGame} />
+      <Scores 
+        scores={scores} 
+        entitiesTurn={entitiesTurn} 
+        newGame={newGame} 
+        difficulty={difficulty}
+        setDifficulty={setDifficulty}
+      />
     </Container>
   );
 }

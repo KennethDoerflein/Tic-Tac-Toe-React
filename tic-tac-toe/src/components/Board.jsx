@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 
-export default function Board({ board, moveHuman, utility, empty, human, computer, entitiesTurn, updateBoard, setEntitiesTurn, scores, setScores }) {
+export default function Board({ board, moveHuman, utility, empty, human, computer, entitiesTurn, updateBoard, setEntitiesTurn, scores, setScores, difficulty }) {
   function checkBoardFull() {
     for (let row = 0; row < board.length; row++) {
       if (board[row].indexOf(empty) !== -1) {
@@ -112,12 +112,43 @@ export default function Board({ board, moveHuman, utility, empty, human, compute
     return bestMove;
   }
 
+  function getRandomMove() {
+    const availableMoves = [];
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        if (board[row][col] === empty) {
+          availableMoves.push([row, col]);
+        }
+      }
+    }
+    const randomIndex = Math.floor(Math.random() * availableMoves.length);
+    return availableMoves[randomIndex];
+  }
+
+  function makeComputerMove() {
+    let computerRawCord;
+    
+    if (difficulty === "easy") {
+      // 80% random moves, 20% best moves
+      const useRandomMove = Math.random() < 0.8;
+      computerRawCord = useRandomMove ? getRandomMove() : findBestMove();
+    } else if (difficulty === "medium") {
+      // 50% random moves, 50% best moves
+      const useRandomMove = Math.random() < 0.5;
+      computerRawCord = useRandomMove ? getRandomMove() : findBestMove();
+    } else {
+      // Hard: Always use best move
+      computerRawCord = findBestMove();
+    }
+
+    const rawCord = computerRawCord[0] * board.length + computerRawCord[1];
+    updateBoard(rawCord, computer);
+  }
+
   useEffect(() => {
     if (entitiesTurn === computer && !checkBoardFull()) {
       setTimeout(() => {
-        const computerRawCord = findBestMove();
-        const rawCord = computerRawCord[0] * board.length + computerRawCord[1];
-        updateBoard(rawCord, computer);
+        makeComputerMove();
       }, 500);
     }
     // eslint-disable-next-line
@@ -126,18 +157,18 @@ export default function Board({ board, moveHuman, utility, empty, human, compute
   useEffect(() => {
     const gameStatus = checkBoardStatus();
     const boardFull = checkBoardFull();
-    const delay = boardFull ? 100 : 50;  // Reduced delays from 400/200 to 100/50
+    const delay = boardFull ? 100 : 50;
     if (boardFull || gameStatus !== 0) {
       setEntitiesTurn(empty);
       setTimeout(() => {
-        const newScores = [...scores];
+        const newScores = {...scores};
         if (boardFull) {
-          newScores[2]++;
+          newScores[difficulty][2]++;
         } else {
           if (gameStatus > 0) {
-            newScores[0]++;
+            newScores[difficulty][0]++;
           } else if (gameStatus < 0) {
-            newScores[1]++;
+            newScores[difficulty][1]++;
           }
         }
         setScores(newScores);
