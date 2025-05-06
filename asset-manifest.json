@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/css/main.7e1199be.css",
-    "main.js": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/js/main.be3122c4.js",
+    "main.css": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/css/main.6c8a178b.css",
+    "main.js": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/js/main.76149142.js",
     "static/js/488.2cb716d4.chunk.js": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/js/488.2cb716d4.chunk.js",
     "index.html": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/index.html",
-    "main.7e1199be.css.map": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/css/main.7e1199be.css.map",
-    "main.be3122c4.js.map": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/js/main.be3122c4.js.map",
+    "main.6c8a178b.css.map": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/css/main.6c8a178b.css.map",
+    "main.76149142.js.map": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/js/main.76149142.js.map",
     "488.2cb716d4.chunk.js.map": "https://KennethDoerflein.github.io/Tic-Tac-Toe-React/static/js/488.2cb716d4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7e1199be.css",
-    "static/js/main.be3122c4.js"
+    "static/css/main.6c8a178b.css",
+    "static/js/main.76149142.js"
   ]
 }
