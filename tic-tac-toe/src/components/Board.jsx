@@ -126,7 +126,7 @@ export default function Board({ board, moveHuman, utility, empty, human, compute
   useEffect(() => {
     const gameStatus = checkBoardStatus();
     const boardFull = checkBoardFull();
-    const delay = boardFull ? 400 : 200;
+    const delay = boardFull ? 100 : 50;  // Reduced delays from 400/200 to 100/50
     if (boardFull || gameStatus !== 0) {
       setEntitiesTurn(empty);
       setTimeout(() => {
