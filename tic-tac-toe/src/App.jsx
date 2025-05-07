@@ -25,7 +25,7 @@ export default function App() {
     medium: [0, 0, 0],  // computer, human, ties
     hard: [0, 0, 0]     // computer, human, ties
   });
-  const [entitiesTurn, setEntitiesTurn] = useState(human);
+  const [entitiesTurn, setEntitiesTurn] = useState(null);  // Changed to null initially
   const [difficulty, setDifficulty] = useState("hard");
 
   function newGame() {
@@ -34,7 +34,7 @@ export default function App() {
       [empty, empty, empty],
       [empty, empty, empty],
     ]);
-    setEntitiesTurn(human);
+    setEntitiesTurn(human);  // Start game with human's turn
   }
 
   function updateBoard(rawCord, entity) {
