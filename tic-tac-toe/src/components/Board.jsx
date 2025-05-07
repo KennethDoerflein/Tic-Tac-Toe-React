@@ -146,7 +146,8 @@ export default function Board({ board, moveHuman, utility, empty, human, compute
   }
 
   useEffect(() => {
-    if (entitiesTurn === computer && !checkBoardFull()) {
+    const gameStatus = checkBoardStatus();
+    if (entitiesTurn === computer && !checkBoardFull() && gameStatus === 0) {
       setTimeout(() => {
         makeComputerMove();
       }, 500);
