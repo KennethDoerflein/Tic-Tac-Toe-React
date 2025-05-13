@@ -2,7 +2,20 @@ import React from "react";
 import { useEffect } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 
-export default function Board({ board, moveHuman, utility, empty, human, computer, entitiesTurn, updateBoard, setEntitiesTurn, scores, setScores, difficulty }) {
+export default function Board({
+  board,
+  moveHuman,
+  utility,
+  empty,
+  human,
+  computer,
+  entitiesTurn,
+  updateBoard,
+  setEntitiesTurn,
+  scores,
+  setScores,
+  difficulty,
+}) {
   function checkBoardFull() {
     for (let row = 0; row < board.length; row++) {
       if (board[row].indexOf(empty) !== -1) {
@@ -127,7 +140,7 @@ export default function Board({ board, moveHuman, utility, empty, human, compute
 
   function makeComputerMove() {
     let computerRawCord;
-    
+
     if (difficulty === "easy") {
       // 80% random moves, 20% best moves
       const useRandomMove = Math.random() < 0.8;
@@ -162,16 +175,17 @@ export default function Board({ board, moveHuman, utility, empty, human, compute
     if (boardFull || gameStatus !== 0) {
       setEntitiesTurn(empty);
       setTimeout(() => {
-        const newScores = {...scores};
-        if (boardFull) {
-          newScores[difficulty][2]++;
+        const newScores = { ...scores };
+        if (boardFull && gameStatus === 0) {
+          newScores[difficulty][2]++; // Tie
         } else {
           if (gameStatus > 0) {
-            newScores[difficulty][0]++;
+            newScores[difficulty][0]++; // Computer win
           } else if (gameStatus < 0) {
-            newScores[difficulty][1]++;
+            newScores[difficulty][1]++; // Human win
           }
         }
+
         setScores(newScores);
       }, delay);
     }
@@ -181,35 +195,71 @@ export default function Board({ board, moveHuman, utility, empty, human, compute
   return (
     <Container id="board">
       <Row>
-        <Col key="0" id="0" onClick={moveHuman} className={board[0][0] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="0"
+          id="0"
+          onClick={moveHuman}
+          className={board[0][0] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[0][0]}
         </Col>
-        <Col key="1" id="1" onClick={moveHuman} className={board[0][1] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="1"
+          id="1"
+          onClick={moveHuman}
+          className={board[0][1] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[0][1]}
         </Col>
-        <Col key="2" id="2" onClick={moveHuman} className={board[0][2] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="2"
+          id="2"
+          onClick={moveHuman}
+          className={board[0][2] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[0][2]}
         </Col>
       </Row>
       <Row>
-        <Col key="3" id="3" onClick={moveHuman} className={board[1][0] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="3"
+          id="3"
+          onClick={moveHuman}
+          className={board[1][0] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[1][0]}
         </Col>
-        <Col key="4" id="4" onClick={moveHuman} className={board[1][1] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="4"
+          id="4"
+          onClick={moveHuman}
+          className={board[1][1] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[1][1]}
         </Col>
-        <Col key="5" id="5" onClick={moveHuman} className={board[1][2] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="5"
+          id="5"
+          onClick={moveHuman}
+          className={board[1][2] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[1][2]}
         </Col>
       </Row>
       <Row>
-        <Col key="6" id="6" onClick={moveHuman} className={board[2][0] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="6"
+          id="6"
+          onClick={moveHuman}
+          className={board[2][0] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[2][0]}
         </Col>
-        <Col key="7" id="7" onClick={moveHuman} className={board[2][1] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="7"
+          id="7"
+          onClick={moveHuman}
+          className={board[2][1] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[2][1]}
         </Col>
-        <Col key="8" id="8" onClick={moveHuman} className={board[2][2] || entitiesTurn === empty ? "boxUsed" : ""}>
+        <Col
+          key="8"
+          id="8"
+          onClick={moveHuman}
+          className={board[2][2] || entitiesTurn === empty ? "boxUsed" : ""}>
           {board[2][2]}
         </Col>
       </Row>
