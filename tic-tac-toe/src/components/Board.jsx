@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 
 export default function Board({
@@ -26,50 +25,43 @@ export default function Board({
   }
 
   function checkBoardStatus() {
-    // Check rows for win
+    // Check rows
     for (let row = 0; row < board.length; row++) {
-      if (board[row][0] === board[row][1] && board[row][1] === board[row][2]) {
-        if (board[row][0] === computer) {
-          return utility;
-        } else if (board[row][0] === human) {
-          return -utility;
-        }
+      if (
+        board[row][0] !== empty &&
+        board[row][0] === board[row][1] &&
+        board[row][1] === board[row][2]
+      ) {
+        return board[row][0] === computer ? utility : -utility;
       }
     }
 
-    // Check columns for win
+    // Check columns
     for (let col = 0; col < board[0].length; col++) {
-      if (board[0][col] === board[1][col] && board[1][col] === board[2][col]) {
-        if (board[0][col] === computer) {
-          return utility;
-        } else if (board[0][col] === human) {
-          return -utility;
-        }
+      if (
+        board[0][col] !== empty &&
+        board[0][col] === board[1][col] &&
+        board[1][col] === board[2][col]
+      ) {
+        return board[0][col] === computer ? utility : -utility;
       }
     }
 
-    // Check right diagonal for win
-    if (board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
-      if (board[0][0] === computer) {
-        return utility;
-      } else if (board[0][0] === human) {
-        return -utility;
-      }
+    // Check right diagonal
+    if (board[0][0] !== empty && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
+      return board[0][0] === computer ? utility : -utility;
     }
 
-    // Check left diagonal for win
-    if (board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
-      if (board[0][2] === computer) {
-        return utility;
-      } else if (board[0][2] === human) {
-        return -utility;
-      }
+    // Check left diagonal
+    if (board[0][2] !== empty && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
+      return board[0][2] === computer ? utility : -utility;
     }
+
     return 0;
   }
 
   function minimax(depth, isMax) {
-    let boardStatus = checkBoardStatus();
+    const boardStatus = checkBoardStatus();
     if (boardStatus === utility || boardStatus === -utility) {
       return boardStatus - depth * (boardStatus / utility);
     } else if (checkBoardFull()) {
@@ -110,14 +102,12 @@ export default function Board({
       for (let col = 0; col < board[row].length; col++) {
         if (board[row][col] === empty) {
           board[row][col] = computer;
-          let minimaxVal = empty;
-          minimaxVal = minimax(0, false);
-
+          const minimaxVal = minimax(0, false);
           board[row][col] = empty;
+
           if (minimaxVal > bestVal) {
-            bestMove[0] = row;
-            bestMove[1] = col;
             bestVal = minimaxVal;
+            bestMove = [row, col];
           }
         }
       }
@@ -139,130 +129,70 @@ export default function Board({
   }
 
   function makeComputerMove() {
-    let computerRawCord;
+    if (entitiesTurn !== computer) return;
 
+    let move;
     if (difficulty === "easy") {
-      // 80% random moves, 20% best moves
-      const useRandomMove = Math.random() < 0.8;
-      computerRawCord = useRandomMove ? getRandomMove() : findBestMove();
+      move = Math.random() < 0.8 ? getRandomMove() : findBestMove();
     } else if (difficulty === "medium") {
-      // 50% random moves, 50% best moves
-      const useRandomMove = Math.random() < 0.5;
-      computerRawCord = useRandomMove ? getRandomMove() : findBestMove();
+      move = Math.random() < 0.5 ? getRandomMove() : findBestMove();
     } else {
-      // Hard: Always use best move
-      computerRawCord = findBestMove();
+      move = findBestMove();
     }
 
-    const rawCord = computerRawCord[0] * board.length + computerRawCord[1];
+    const rawCord = move[0] * board.length + move[1];
     updateBoard(rawCord, computer);
   }
 
+  // AI move when it's computer's turn
   useEffect(() => {
-    const gameStatus = checkBoardStatus();
-    if (entitiesTurn === computer && !checkBoardFull() && gameStatus === 0) {
-      setTimeout(() => {
-        makeComputerMove();
-      }, 500);
+    const status = checkBoardStatus();
+    if (entitiesTurn === computer && !checkBoardFull() && status === 0) {
+      setTimeout(() => makeComputerMove(), 500);
     }
     // eslint-disable-next-line
   }, [entitiesTurn, board]);
 
+  // Game end checker
   useEffect(() => {
     const gameStatus = checkBoardStatus();
     const boardFull = checkBoardFull();
-    const delay = boardFull ? 100 : 50;
+
     if (boardFull || gameStatus !== 0) {
-      setEntitiesTurn(empty);
+      setEntitiesTurn(empty); // stop game
       setTimeout(() => {
         const newScores = { ...scores };
         if (boardFull && gameStatus === 0) {
           newScores[difficulty][2]++; // Tie
-        } else {
-          if (gameStatus > 0) {
-            newScores[difficulty][0]++; // Computer win
-          } else if (gameStatus < 0) {
-            newScores[difficulty][1]++; // Human win
-          }
+        } else if (gameStatus > 0) {
+          newScores[difficulty][0]++; // Computer wins
+        } else if (gameStatus < 0) {
+          newScores[difficulty][1]++; // Human wins
         }
-
         setScores(newScores);
-      }, delay);
+      }, 100);
     }
     // eslint-disable-next-line
   }, [board]);
 
   return (
     <Container id="board">
-      <Row>
-        <Col
-          key="0"
-          id="0"
-          onClick={moveHuman}
-          className={board[0][0] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[0][0]}
-        </Col>
-        <Col
-          key="1"
-          id="1"
-          onClick={moveHuman}
-          className={board[0][1] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[0][1]}
-        </Col>
-        <Col
-          key="2"
-          id="2"
-          onClick={moveHuman}
-          className={board[0][2] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[0][2]}
-        </Col>
-      </Row>
-      <Row>
-        <Col
-          key="3"
-          id="3"
-          onClick={moveHuman}
-          className={board[1][0] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[1][0]}
-        </Col>
-        <Col
-          key="4"
-          id="4"
-          onClick={moveHuman}
-          className={board[1][1] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[1][1]}
-        </Col>
-        <Col
-          key="5"
-          id="5"
-          onClick={moveHuman}
-          className={board[1][2] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[1][2]}
-        </Col>
-      </Row>
-      <Row>
-        <Col
-          key="6"
-          id="6"
-          onClick={moveHuman}
-          className={board[2][0] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[2][0]}
-        </Col>
-        <Col
-          key="7"
-          id="7"
-          onClick={moveHuman}
-          className={board[2][1] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[2][1]}
-        </Col>
-        <Col
-          key="8"
-          id="8"
-          onClick={moveHuman}
-          className={board[2][2] || entitiesTurn === empty ? "boxUsed" : ""}>
-          {board[2][2]}
-        </Col>
-      </Row>
+      {board.map((row, rowIndex) => (
+        <Row key={rowIndex}>
+          {row.map((cell, colIndex) => {
+            const index = rowIndex * board.length + colIndex;
+            return (
+              <Col
+                key={index}
+                id={index.toString()}
+                onClick={moveHuman}
+                className={cell || entitiesTurn === empty ? "boxUsed" : ""}>
+                {cell}
+              </Col>
+            );
+          })}
+        </Row>
+      ))}
     </Container>
   );
 }
