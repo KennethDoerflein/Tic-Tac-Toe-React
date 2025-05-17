@@ -3,7 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Change this to your default branch
+      - main # Your default branch
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -11,6 +12,10 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
+
+      - name: Set homepage in package.json
+        run: |
+          jq '.homepage = "https://kennethdoerflein.github.io/Tic-Tac-Toe-React/"' package.json > temp.json && mv temp.json package.json
 
       - name: Install dependencies and build
         run: |
@@ -20,5 +25,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages  # The branch to deploy to
-          folder: build  # The folder to deploy
+          branch: gh-pages # The branch to deploy to
+          folder: build # The folder to deploy
