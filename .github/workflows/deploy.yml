@@ -16,10 +16,9 @@ jobs:
         run: |
           npm install
           npm run build
-        working-directory: tic-tac-toe
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages  # The branch to deploy to
-          folder: tic-tac-toe/build  # The folder to deploy
+          folder: build  # The folder to deploy
