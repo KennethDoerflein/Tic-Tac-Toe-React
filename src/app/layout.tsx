@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-bs-theme="dark" suppressHydrationWarning>
-      <link rel="icon" href={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/favicon.ico`} />
+      <link rel="icon" href="favicon.ico" />
       <body>{children}</body>
     </html>
   );
