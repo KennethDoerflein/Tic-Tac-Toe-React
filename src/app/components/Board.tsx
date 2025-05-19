@@ -1,7 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, MouseEvent } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 
-export default function Board({
+type Player = "X" | "O" | null;
+type BoardType = Player[][];
+type Difficulty = "easy" | "medium" | "hard";
+type ScoresType = {
+  easy: [number, number, number];
+  medium: [number, number, number];
+  hard: [number, number, number];
+};
+
+interface BoardProps {
+  board: BoardType;
+  moveHuman: (e: MouseEvent<HTMLDivElement>) => void;
+  utility: number;
+  empty: Player;
+  human: Player;
+  computer: Player;
+  entitiesTurn: Player;
+  updateBoard: (rawCord: number, entity: Player) => void;
+  setEntitiesTurn: (entity: Player) => void;
+  scores: ScoresType;
+  setScores: (scores: ScoresType) => void;
+  difficulty: Difficulty;
+}
+
+const Board: React.FC<BoardProps> = ({
   board,
   moveHuman,
   utility,
@@ -14,17 +38,17 @@ export default function Board({
   scores,
   setScores,
   difficulty,
-}) {
-  function checkBoardFull() {
+}) => {
+  function checkBoardFull(): boolean {
     for (let row = 0; row < board.length; row++) {
-      if (board[row].indexOf(empty) !== -1) {
+      if (board[row].includes(empty)) {
         return false;
       }
     }
     return true;
   }
 
-  function checkBoardStatus() {
+  function checkBoardStatus(): number {
     // Check rows
     for (let row = 0; row < board.length; row++) {
       if (
@@ -47,12 +71,11 @@ export default function Board({
       }
     }
 
-    // Check right diagonal
+    // Diagonals
     if (board[0][0] !== empty && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
       return board[0][0] === computer ? utility : -utility;
     }
 
-    // Check left diagonal
     if (board[0][2] !== empty && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
       return board[0][2] === computer ? utility : -utility;
     }
@@ -60,7 +83,7 @@ export default function Board({
     return 0;
   }
 
-  function minimax(depth, isMax) {
+  function minimax(depth: number, isMax: boolean): number {
     const boardStatus = checkBoardStatus();
     if (boardStatus === utility || boardStatus === -utility) {
       return boardStatus - depth * (boardStatus / utility);
@@ -68,7 +91,8 @@ export default function Board({
       return 0;
     }
 
-    let best;
+    let best: number;
+
     if (isMax) {
       best = Number.MIN_SAFE_INTEGER;
       for (let row = 0; row < board.length; row++) {
@@ -92,31 +116,34 @@ export default function Board({
         }
       }
     }
+
     return best;
   }
 
-  function findBestMove() {
+  function findBestMove(): [number, number] {
     let bestVal = Number.MIN_SAFE_INTEGER;
-    let bestMove = [-1, -1];
+    let bestMove: [number, number] = [-1, -1];
+
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {
         if (board[row][col] === empty) {
           board[row][col] = computer;
-          const minimaxVal = minimax(0, false);
+          const moveVal = minimax(0, false);
           board[row][col] = empty;
 
-          if (minimaxVal > bestVal) {
-            bestVal = minimaxVal;
+          if (moveVal > bestVal) {
+            bestVal = moveVal;
             bestMove = [row, col];
           }
         }
       }
     }
+
     return bestMove;
   }
 
-  function getRandomMove() {
-    const availableMoves = [];
+  function getRandomMove(): [number, number] {
+    const availableMoves: [number, number][] = [];
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {
         if (board[row][col] === empty) {
@@ -124,14 +151,15 @@ export default function Board({
         }
       }
     }
+
     const randomIndex = Math.floor(Math.random() * availableMoves.length);
     return availableMoves[randomIndex];
   }
 
-  function makeComputerMove() {
+  function makeComputerMove(): void {
     if (entitiesTurn !== computer) return;
 
-    let move;
+    let move: [number, number];
     if (difficulty === "easy") {
       move = Math.random() < 0.8 ? getRandomMove() : findBestMove();
     } else if (difficulty === "medium") {
@@ -144,22 +172,20 @@ export default function Board({
     updateBoard(rawCord, computer);
   }
 
-  // AI move when it's computer's turn
   useEffect(() => {
     const status = checkBoardStatus();
     if (entitiesTurn === computer && !checkBoardFull() && status === 0) {
       setTimeout(() => makeComputerMove(), 500);
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entitiesTurn, board]);
 
-  // Game end checker
   useEffect(() => {
     const gameStatus = checkBoardStatus();
     const boardFull = checkBoardFull();
 
     if (boardFull || gameStatus !== 0) {
-      setEntitiesTurn(empty); // stop game
+      setEntitiesTurn(empty);
       setTimeout(() => {
         const newScores = { ...scores };
         if (boardFull && gameStatus === 0) {
@@ -172,7 +198,7 @@ export default function Board({
         setScores(newScores);
       }, 100);
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board]);
 
   return (
@@ -195,4 +221,6 @@ export default function Board({
       ))}
     </Container>
   );
-}
+};
+
+export default Board;
