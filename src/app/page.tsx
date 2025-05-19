@@ -1,12 +1,12 @@
+// src/app/page.tsx
 "use client";
+
 import { useState, MouseEvent } from "react";
 import type { NextPage } from "next";
 import Board from "./components/Board";
 import Scores from "./components/Scores";
 
-import "./styles.css";
 import { Container } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 type Player = "X" | "O" | null;
 type BoardType = Player[][];
