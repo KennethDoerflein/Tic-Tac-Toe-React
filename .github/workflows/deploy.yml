@@ -13,14 +13,18 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
-      - name: Set homepage in package.json
-        run: |
-          jq '.homepage = "https://kennethdoerflein.github.io/Tic-Tac-Toe-React/"' package.json > temp.json && mv temp.json package.json
+      # - name: Set homepage in package.json
+      #   run: |
+      #     jq '.homepage = "https://kennethdoerflein.github.io/Tic-Tac-Toe-React/"' package.json > temp.json && mv temp.json package.json
 
       - name: Install dependencies and build
         run: |
-          npm install
+          npm ci
           npm run build
+
+      - name: Disable Jekyll
+        run: |
+          touch out/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
