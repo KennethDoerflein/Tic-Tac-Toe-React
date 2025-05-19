@@ -5,6 +5,7 @@ import { useState, MouseEvent } from "react";
 import type { NextPage } from "next";
 import Board from "./components/Board";
 import Scores from "./components/Scores";
+import appInfo from "../../package.json";
 
 import { Container } from "react-bootstrap";
 
@@ -69,29 +70,34 @@ const HomePage: NextPage = () => {
   }
 
   return (
-    <Container className="text-center mt-5">
-      <Board
-        board={board}
-        moveHuman={moveHuman}
-        utility={utility}
-        empty={empty}
-        human={human}
-        computer={computer}
-        entitiesTurn={entitiesTurn}
-        updateBoard={updateBoard}
-        setEntitiesTurn={setEntitiesTurn}
-        scores={scores}
-        setScores={setScores}
-        difficulty={difficulty}
-      />
-      <Scores
-        scores={scores}
-        entitiesTurn={entitiesTurn}
-        newGame={newGame}
-        difficulty={difficulty}
-        setDifficulty={setDifficulty}
-      />
-    </Container>
+    <>
+      <Container className="text-center mt-5">
+        <Board
+          board={board}
+          moveHuman={moveHuman}
+          utility={utility}
+          empty={empty}
+          human={human}
+          computer={computer}
+          entitiesTurn={entitiesTurn}
+          updateBoard={updateBoard}
+          setEntitiesTurn={setEntitiesTurn}
+          scores={scores}
+          setScores={setScores}
+          difficulty={difficulty}
+        />
+        <Scores
+          scores={scores}
+          entitiesTurn={entitiesTurn}
+          newGame={newGame}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+        />
+      </Container>
+      <footer className="text-center py-4">
+        <Container className="text-center pb-2">Site Version: {appInfo.version}</Container>
+      </footer>
+    </>
   );
 };
 
